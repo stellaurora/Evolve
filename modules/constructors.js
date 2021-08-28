@@ -1,13 +1,16 @@
 
 
 // A tile object constructor
-function tileConstructor(x,y,colourNew, heatNew, tree) {
+function tileConstructor(x,y,colourNew, heatNew, tree, realX, realY, water) {
 
 	this.x = x;
 	this.y = y;
 	this.colour = colourNew;
 	this.heatcolour = heatNew;
 	this.tree = tree;
+	this.realX = realX;
+	this.realY = realY;
+	this.water = water;
 }
 
 // A chunk object constructor

@@ -90,7 +90,7 @@ function colourise(heightValue, biome) {
 		let heightLevel =  heightLevels.levels[i]
 
 		if ( heightLevels[heightLevel] > heightValue ) {
-			return biome[heightLevel]
+			return [biome[heightLevel], heightLevel]
 		}
 
 	}
@@ -118,10 +118,12 @@ function refreshTrees(trees) {
 		// Generate a new tree heightmap
 		treeMap = perlinNoise(tilePos.x/(tileSize), tilePos.y/(tileSize), perliniteration) + genFactors.treeShift;
 		trees[x].tree = false;
+		totalTiles[x].tree = false;
 		if ( genFactors.treeBiasMap < treeMap) {
 			if (Math.random() < genFactors.treeBiasRandom) {
 
 				trees[x].tree = true;
+				totalTiles[x].tree = true;
 			}
 		}
 	};
@@ -133,9 +135,7 @@ function treeCheck(tileHeightColour, treeMap, x ,y) {
 
 	// Check using randomness & perlin noise map to determine if  tree should be placed on tile.
 	if (genFactors.treeBiomes.includes(tileHeightColour)) {
-		trees[[x,y]] = {tilePos: {x:x,y:y},
-						tree:false,
-						berry:false};
+		trees[[x,y]] = {tilePos: {x: x, y: y}, tree: false, berry: false}
 		if ( genFactors.treeBiasMap < treeMap) {
 			if (Math.random() < genFactors.treeBiasRandom) {
 
@@ -186,15 +186,19 @@ function generateEntities() {
 
 		// Entity object being created
 		entity = {
-			position: 		availableTiles[index],
-			colour:   		startingColour,
-			scale:				genFactors.startingScale,
-			boundingBox: 	calculateBoundBox(availableTiles[index], genFactors.startingScale),
-			strokeStyle:  biome["defaultEntityRing"],
-			speed:				1,
-			state:				fabricatedKnowledge.wander,
-			moveTarget: 	null,
-			sense:				3,
+			position: 			availableTiles[index],
+			colour:   			startingColour,
+			scale:					genFactors.startingScale,
+			boundingBox: 		calculateBoundBox(availableTiles[index], genFactors.startingScale),
+			strokeStyle:  	biome["defaultEntityRing"],
+			speed:					1,
+			state:					"wander",
+			moveTarget: 		null,
+			sense:					3,
+			availableTiles: [],
+			foundTree: 			false,
+			ate: 						false,
+			sleep:					false,
 		}
 
 		// Add entity to list of entities
@@ -250,11 +254,19 @@ function GenWorld() {
 					// colour of tile vs the height it is.
 					let tileHeightColour = colourise(height, biome);
 
+					let water = false;
+
+					if (heightLevels.waterLevels.includes(tileHeightColour[1])) {
+						water = true
+					}
+
+					tileHeightColour = tileHeightColour[0]
+
 					// Perlin noise map for trees/bushes
 					let TreeMap = perlinNoise(tilePos.x/(tileSize), tilePos.y/(tileSize), treeiter) + genFactors.treeShift;
 
 					// Create trees using tree perlin noise map
-					let tileContainsTree = treeCheck(tileHeightColour, TreeMap, tx + cx * chunkSizes * tileSize,  ty + cy * chunkSizes * tileSize);
+					let tileContainsTree = treeCheck(tileHeightColour, TreeMap, tilePos.x, tilePos.y);
 
 					// Default heat of tile.
 					heat = genFactors.heatShift - (line_world[tilePos.x][tilePos.y] + htsl)
@@ -266,8 +278,14 @@ function GenWorld() {
 						availableTiles.push({x:tilePos.x * 20, y:tilePos.y * 20})
 					}
 
+
+					tile = new tileConstructor(tx, ty, tileHeightColour, heatMapColour, tileContainsTree, tilePos.x, tilePos.y, water)
+					tileRealPos = new tileConstructor(tx, ty, tileHeightColour, heatMapColour, tileContainsTree, tilePos.x, tilePos.y, water)
+					// add to total list of tiles
+					totalTiles[[tilePos.x, tilePos.y]] = tileRealPos
+
 					// Add tile to chunk
-					chunk.tiles.push(new tileConstructor(tx, ty, tileHeightColour, heatMapColour, tileContainsTree))
+					chunk.tiles.push(tile)
 				};
 			};
 

@@ -53,7 +53,7 @@ function draw(ctx, viewport, chunkSizes){
 				tileposY = ((culled[row][i].tiles[t].y * tileSize ) + chunkY + viewport.tleft.y) * viewport.scale;
 				ctx.fillRect(tileposX, tileposY, tileScaledSize, tileScaledSize);
 
-				treeCoord = trees[[chunkX + culled[row][i].tiles[t].x, chunkY + culled[row][i].tiles[t].y]];
+				treeCoord = trees[[tile.realX, tile.realY]];
 				if(treeCoord != undefined) {
 					if(treeCoord.tree) {
 						if(treeCoord.berry) {

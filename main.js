@@ -6,7 +6,8 @@ var ctx = canvas.getContext('2d', { alpha: false });
 // size of tiles
 var tileSize = 20
 
-var visibleChunks = []
+// list of all tiles
+var totalTiles = {}
 
 // chunkSizes ^2 determines how many tiles are in a chunk
 var chunkSizes = 10;
@@ -47,7 +48,7 @@ var heightLevels = {
 
 	// All levels of height
 	levels: ["depths","twilight","bright","coast","shore","sand","light","medium","dark","mount1","mount2","snow1","snow2"],
-
+	waterLevels: ["depths","twilight","bright","coast","shore"],
 	// Height value per level
 	depths:		0.45,
 	twilight:	0.6,
@@ -73,7 +74,7 @@ var clockSettings = {
 	berryRefresh: 30,
 
 	// Seconds taken for day night cycle
-	dayNight: 30,
+	dayNight: 5,
 
 	// Seconds taken for new trees to generate
 	treeReplace: 120,
@@ -94,6 +95,8 @@ var textDisplay = {
 	strokeStyle: true,
 	state: true,
 	moveTarget: true,
+	availableTiles: true,
+	foundTree: true,
 
 }
 
@@ -151,7 +154,7 @@ var genFactors = {
 
 
 	//How many entities to spawn in at the beginning of execution
-	startingEntities: 50,
+	startingEntities: 60,
 
 	// Random coloured entities
 	randomColour: true,
@@ -206,6 +209,7 @@ var statsFactors = {
 
 }
 
+
 // Current iteration of perlin nosie
 var perliniteration = 0;
 
@@ -236,6 +240,9 @@ var entitySelected = false;
 // Stats for the selected entity draw location
 var entityDisplayStats = [{}];
 
+// constant of world total sizes
+var worldTotalSize = tileSize * chunkSizes * worldSize
+
 // Clocks for refresh intervals.
 var clocks = {
 	berryRefresh: 0,
@@ -264,8 +271,7 @@ function clockCheck(time) {
 
 	// Day night cycle if i ever implement it
 	if ( time >= (clocks.dayNight + (clockSettings.dayNight * 1000))) {
-
-		console.log('day/night cycle')
+		
 		clocks.dayNight = time;
 	};
 }
@@ -278,7 +284,7 @@ function gameLoop(time){
 	updateWindow(ctx)
 
 	// Clear the canvas
-	clearCanvas('white');
+	clearCanvas(biome["depths"]);
 
 	// Draw tiles & Entities
 	draw(ctx, viewport, chunkSizes);

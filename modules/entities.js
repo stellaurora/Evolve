@@ -127,7 +127,7 @@ function sentience(ctx, entites) {
   for (entity in entities) {
 
     current_entity = entities[entity]
-    postsentience.push(current_entity.state(current_entity));
+    postsentience.push(fabricatedKnowledge[current_entity.state](current_entity));
 
   }
 
@@ -164,20 +164,95 @@ var fabricatedKnowledge = {
     return this.move(entity, moveX, moveY)
   },
 
+  genRandomWander: function(entity) {
+
+    current_tile = {water: true}
+    let moveX = worldTotalSize/2
+    let moveY = worldTotalSize/2
+    while (current_tile != undefined && current_tile.water == true) {
+      moveX = Math.floor(entity.position.x + (Math.random() -0.5 )* 100);
+      moveY = Math.floor(entity.position.y + (Math.random() -0.5 )* 100);
+      current_tile = totalTiles[[Math.ceil(moveX/20), Math.ceil(moveY/20)]]
+    }
+
+    return {x: moveX, y: moveY, tile: current_tile}
+  },
+
   wander: function(entity) {
+
+    if (entity.sleep == true) {
+      return entity
+    }
+
+    if (entity.foundTree == true) {
+      if (entity.moveTarget != null) {
+        if (trees[[Math.round(entity.moveTarget.x/20),Math.round(entity.moveTarget.y/20)]].berry != true) {
+          entity.moveTarget = null;
+          entity.foundTree = false;
+        }
+      }
+    }
 
     // if a moveTarget is already set during wandering process
     if (entity.moveTarget == null) {
-      let moveX = Math.floor(entity.position.x + (Math.random() -0.5 )* 200);
-      let moveY = Math.floor(entity.position.y + (Math.random() -0.5 )* 200);
 
-      entity.moveTarget = {x: moveX, y: moveY}
-      return entity
+      moveData = fabricatedKnowledge.genRandomWander(entity)
+
+
+      entity.moveTarget = {x: moveData.x, y: moveData.y}
+
+      if (entity.foundTree == true) {
+        trees[[Math.round(entity.position.x/20), Math.round(entity.position.y/20)]].berry = false;
+        entity.foundTree = false;
+        entity.ate = true;
+        entity.sleep = true;
+
+      }
+    }
+
+    // update available tiles while wandering
+    entity = fabricatedKnowledge.getEntityTile(entity)
+
+    for (tile in entity.accessibleTiles) {
+      current_tile = entity.accessibleTiles[tile]
+      if (current_tile == undefined) {
+        console.log(entity)
+      }
+      if (current_tile.tree == true) {
+        if (trees[[current_tile.realX, current_tile.realY]].berry == true) {
+          entity.foundTree = true;
+          entity.moveTarget = {x:current_tile.realX * tileSize, y:current_tile.realY * tileSize}
+       }
+      }
     }
 
     fabricatedKnowledge.moveTowardsGoal(entity, entity.moveTarget.x, entity.moveTarget.y)
 
     return entity
-  }
+  },
 
+  getEntityTile: function(entity) {
+    let entX = Math.ceil(entity.position.x/tileSize);
+    let entY = Math.ceil(entity.position.y/tileSize);
+
+    let tleft =  {x: entX - entity.sense, y: entY - entity.sense};
+    let bright = {x: entX + entity.sense, y: entY + entity.sense};
+
+    let accessibleTiles = [];
+
+    for (   let x = tleft.x; x < bright.x; x++ ) {
+      for ( let y = tleft.y; y < bright.y; y++ ) {
+
+        current_tile = totalTiles[[x,y]]
+
+        if(current_tile != undefined) {
+          accessibleTiles.push(current_tile)
+        }
+
+      }
+    }
+    entity.accessibleTiles = accessibleTiles;
+
+    return entity
+  },
 }
