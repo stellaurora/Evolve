@@ -124,6 +124,10 @@ function sentience(ctx, entites) {
 
   let postsentience = [];
 
+  if (entites.length == 0) {
+    console.log('the world has ended')
+  }
+
   for (entity in entities) {
 
     current_entity = entities[entity]
@@ -171,9 +175,10 @@ var fabricatedKnowledge = {
     current_tile = {water: true}
     let moveX = worldTotalSize/2
     let moveY = worldTotalSize/2
+
     while (current_tile != undefined && current_tile.water == true) {
-      moveX = Math.floor(entity.position.x + (Math.random() -0.5 )* 100);
-      moveY = Math.floor(entity.position.y + (Math.random() -0.5 )* 100);
+      moveX = Math.floor(entity.position.x + (Math.random() -0.5 )* current_entity.wanderdistance );
+      moveY = Math.floor(entity.position.y + (Math.random() -0.5 )* current_entity.wanderdistance );
       current_tile = totalTiles[[Math.ceil(moveX/20), Math.ceil(moveY/20)]]
     }
 
@@ -200,8 +205,12 @@ var fabricatedKnowledge = {
       entity.moveTarget = {x: moveData.x, y: moveData.y}
 
       if (entity.foundTree == true) {
-        trees[[Math.round(entity.position.x/20), Math.round(entity.position.y/20)]].berry = false;
+        if (trees[[Math.round(entity.position.x/20), Math.round(entity.position.y/20)]] == undefined) {
+          console.log(entity, [Math.round(entity.position.x/20), Math.round(entity.position.y/20)])
+        }
+        trees[[entity.treeTarget.tilePos.x, entity.treeTarget.tilePos.y]].berry = false;
         entity.foundTree = false;
+        entity.treeTarget = {}
         entity.treesEaten += 1;
 
       }
@@ -220,6 +229,7 @@ var fabricatedKnowledge = {
           if (trees[[current_tile.realX, current_tile.realY]].berry == true) {
             entity.foundTree = true;
             entity.moveTarget = {x:current_tile.realX * tileSize, y:current_tile.realY * tileSize}
+            entity.treeTarget = trees[[current_tile.realX, current_tile.realY]]
          }
         }
       }

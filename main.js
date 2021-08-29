@@ -19,7 +19,7 @@ var viewportScale = 2;
 var worldSize = 10
 
 // Manual selecion flag
-var manualSelect = true;
+var manualSelect = false;
 
 // sea level height ( between 0 and 2 )
 var seaLevel = 1;
@@ -88,17 +88,21 @@ var textDisplay = {
 	totalList: [],
 
 	// Toggles on/off if to display entity property in selection text
-	position: true,
-	colour: true,
-	scale: true,
-	boundingBox: true,
-	strokeStyle: true,
-	state: true,
-	treesEaten: true,
-	moveTarget: true,
-	availableTiles: true,
-	foundTree: true,
-	generation: true,
+	position: 						true,
+	colour:   						true,
+	scale:								true,
+	boundingBox: 					true,
+	strokeStyle:  				true,
+	speed:								true,
+	state:								true,
+	moveTarget: 					true,
+	sense:								true,
+	availableTiles: 			true,
+	foundTree: 						true,
+	treesEaten: 					true,
+	reproductabililty:		true,
+	generation: 					true,
+	wanderdistance: 			true,
 
 }
 
@@ -281,13 +285,23 @@ function clockCheck(time) {
 	// Day night cycle if i ever implement it
 	if ( time >= (clocks.dayNight + (clockSettings.dayNight * 1000))) {
 
+		let averages = {
+			speed: 0,
+			scale: 0,
+			reproductabililty: 0,
+			generation: 0,
+			wanderdistance: 0,
+		}
+
+		averageKeys = Object.keys(averages)
+
 		// Entities which survive the day ;o
 		let survived_entities = [];
 
 		for (entity in entities) {
 			current_entity = entities[entity]
 
-			if (current_entity.treesEaten > 1) {
+			if (current_entity.treesEaten > 1 && Math.random() < (current_entity.reproductabililty/100)) {
 
 				// Determine the starting colour
 				startingColour = biome["startingColour"];
@@ -298,32 +312,58 @@ function clockCheck(time) {
 				};
 
 				new_entity = {
-					position: 				{x: current_entity.position.x, y: current_entity.position.y} ,
-					colour:   				startingColour,
-					scale:						current_entity.scale * (Math.random() +0.5),
-					boundingBox: 			calculateBoundBox(current_entity.position, genFactors.startingScale),
-					strokeStyle:  		biome["defaultEntityRing"],
-					speed:						current_entity.speed * (Math.random() +0.5),
-					state:						"wander",
-					moveTarget: 			null,
-					sense:						current_entity.sense,
-					availableTiles: 	[],
-					foundTree: 				false,
-					treesEaten: 			0,
-					reproductabililty: 80,
-					generation: 			current_entity.generation+1,
+					position: 					{x: current_entity.position.x, y: current_entity.position.y} ,
+					colour:   					startingColour,
+					scale:							current_entity.scale * (Math.random() +0.5),
+					boundingBox: 				calculateBoundBox(current_entity.position, genFactors.startingScale),
+					strokeStyle:  			biome["defaultEntityRing"],
+					speed:							current_entity.speed * (Math.random() +0.5),
+					state:							"wander",
+					moveTarget: 				null,
+					sense:							current_entity.sense,
+					availableTiles: 		[],
+					foundTree: 					false,
+					treesEaten: 				0,
+					reproductabililty:	current_entity.reproductabililty * (Math.random() +0.5),
+					generation: 				current_entity.generation+1,
+					wanderdistance: 		current_entity.wanderdistance * (Math.random() +0.5),
 				}
 
+				for (key in averageKeys) {
+
+					current_key = averageKeys[key]
+
+					averages[current_key] += new_entity[current_key]
+
+				}
 				survived_entities.push(new_entity)
+
 				console.log('new_entity')
 			}
 			if (current_entity.treesEaten > 0) {
 				current_entity.treesEaten = 0
+
+				for (key in averageKeys) {
+
+					current_key = averageKeys[key]
+
+					averages[current_key] += current_entity[current_key]
+
+				}
+
 				survived_entities.push(current_entity)
 			}
 		}
 
 		console.log('daynight cycle')
+
+		for (key in averageKeys) {
+
+			current_key = averageKeys[key]
+
+			console.log('Average '+current_key+': '+ averages[current_key]/survived_entities.length)
+
+		}
 
 		entities = survived_entities;
 		clocks.dayNight = time;
