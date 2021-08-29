@@ -26,12 +26,6 @@ function draw(ctx, viewport, chunkSizes){
 	// Correct size with scale every draw
 	let tileScaledSize = tileSize * viewport.scale;
 
-	let noBerry = new Image();
-	noBerry.src = "./assets/tree.svg"
-
-	let berry = new Image();
-	berry.src = "./assets/berry.svg"
-
 	let culled = viewport.checkChunks()
 	// DRAW TILES
 

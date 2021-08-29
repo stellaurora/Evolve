@@ -230,6 +230,13 @@ var previousFrameTime = 0;
 // current time between frames
 var frameTime = 0;
 
+// Tree with or without berry images loading
+let noBerry = new Image();
+noBerry.src = "./assets/tree.svg"
+
+let berry = new Image();
+berry.src = "./assets/berry.svg"
+
 // Map for movement
 var map = {};
 
