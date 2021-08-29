@@ -188,20 +188,21 @@ function generateEntities() {
 		entity = {
 			position: 						availableTiles[index],
 			colour:   						startingColour,
-			scale:								genFactors.startingScale,
 			boundingBox: 					calculateBoundBox(availableTiles[index], genFactors.startingScale),
 			strokeStyle:  				biome["defaultEntityRing"],
-			speed:								1,
+			scale:								genFactors.startingScale,
+			speed:								genFactors.startingSpeed,
+			sense:								genFactors.startingSense,
+			reproductabililty:		genFactors.startingRepro,
+			wanderdistance: 			genFactors.startingWandr,
 			state:								"wander",
 			moveTarget: 					null,
-			sense:								3,
 			availableTiles: 			[],
 			foundTree: 						false,
 			treesEaten: 					0,
-			reproductabililty:		80,
 			generation: 					0,
-			wanderdistance: 			100,
 			treeTarget:						{},
+			daysAlive:						0,
 		}
 
 		// Add entity to list of entities
@@ -278,7 +279,7 @@ function GenWorld() {
 					heatMapColour = "rgb(" + heat * 168 + "," + heat * 128 + "," + heat * 128 + ")";
 
 					if (genFactors.treeBiomes.includes(tileHeightColour)) {
-						availableTiles.push({x:tilePos.x * 20, y:tilePos.y * 20})
+						availableTiles.push({x:tilePos.x * tileSize, y:tilePos.y * tileSize})
 					}
 
 

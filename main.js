@@ -1,4 +1,7 @@
 
+// Main central file
+
+
 // Canvas elements
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext('2d', { alpha: false });
@@ -58,6 +61,7 @@ var heightLevels = {
 	// All levels of height
 	levels: ["depths","twilight","bright","coast","shore","sand","light","medium","dark","mount1","mount2","snow1","snow2"],
 	waterLevels: ["depths","twilight","bright","coast","shore"],
+
 	// Height value per level
 	depths:		0.45,
 	twilight:	0.6,
@@ -182,8 +186,50 @@ var genFactors = {
 
 	//Starting size of entities for nom nom and protek
 	startingScale: 5,
+	startingSpeed: 1,
+	startingRepro: 80,
+	startingSense: 3,
+	startingWandr: 100,
 }
 
+var simulationFactors = {
+	// Minimum values for each stat
+	minScale: 2,
+	minSpeed: -Infinity,
+	minRepro: -Infinity,
+	minWandr: -Infinity,
+
+	// Maximum values for each stat
+	maxScale: Infinity,
+	maxSpeed: Infinity,
+	maxRepro: Infinity,
+	maxWandr: 300,
+
+	// how much food does eating a tree with a berry on it give
+	foodValue: 1,
+
+	// maximum amount of food an entity can eat in a day
+	maxFood: 2,
+
+	// how much food an entity needs a day to survive
+	foodReq: 1,
+
+	// how much food an entity needs to have a child
+	childReq: 2,
+
+	// How much every mutation should effect scale
+	scaleMutationFactor: 1,
+
+	// How much every mutation should effect speed
+	speedMutationFactor: 1,
+
+	// How much every mutation should effect reproductabililty
+	reproMutationFactor: 1,
+
+	// How much every mutation should effect wandering distance
+	wandrMutationFactor: 1,
+
+}
 
 var statsFactors = {
 
@@ -262,6 +308,9 @@ var entitySelected = false;
 // Stats for the selected entity draw location
 var entityDisplayStats = [{}];
 
+// the day
+var day = 0
+
 // constant of world total sizes
 var worldTotalSize = tileSize * chunkSizes * worldSize
 
@@ -274,113 +323,6 @@ var clocks = {
 
 // Construct viewport before running anything else
 var viewport = viewportCreator(worldSize, tileSize, chunkSizes, startingPositions[startingPos].x, startingPositions[startingPos].y);
-
-
-// Clock check every frame to see if enough time has passed for a certain action to happen (yes its dependant on framerate rn)
-function clockCheck(time) {
-
-	// Refresh berries
-	if ( time >= (clocks.berryRefresh + (clockSettings.berryRefresh * 1000))) {
-
-		refreshBerries(trees)
-		clocks.berryRefresh = time;
-	};
-
-	// Replace berries around the map so there's no campers
-	if ( time >= (clocks.treeReplace + (clockSettings.treeReplace * 1000))) {
-
-		refreshTrees(trees)
-		refreshBerries(trees)
-		clocks.treeReplace = time;
-	};
-
-	// Day night cycle if i ever implement it
-	if ( time >= (clocks.dayNight + (clockSettings.dayNight * 1000))) {
-
-		let averages = {
-			speed: 0,
-			scale: 0,
-			reproductabililty: 0,
-			generation: 0,
-			wanderdistance: 0,
-		}
-
-		averageKeys = Object.keys(averages)
-
-		// Entities which survive the day ;o
-		let survived_entities = [];
-
-		for (entity in entities) {
-			current_entity = entities[entity]
-
-			if (current_entity.treesEaten > 1 && Math.random() < (current_entity.reproductabililty/100)) {
-
-				// Determine the starting colour
-				startingColour = biome["startingColour"];
-
-				// If random generate a random colour with brightness
-				if (genFactors.randomColour == true) {
-					startingColour = randomColour(genFactors.entityRANCOLBrightness);
-				};
-
-				new_entity = {
-					position: 					{x: current_entity.position.x, y: current_entity.position.y} ,
-					colour:   					startingColour,
-					scale:							current_entity.scale * (Math.random() +0.5),
-					boundingBox: 				calculateBoundBox(current_entity.position, genFactors.startingScale),
-					strokeStyle:  			biome["defaultEntityRing"],
-					speed:							current_entity.speed * (Math.random() +0.5),
-					state:							"wander",
-					moveTarget: 				null,
-					sense:							current_entity.sense,
-					availableTiles: 		[],
-					foundTree: 					false,
-					treesEaten: 				0,
-					reproductabililty:	current_entity.reproductabililty * (Math.random() +0.5),
-					generation: 				current_entity.generation+1,
-					wanderdistance: 		current_entity.wanderdistance * (Math.random() +0.5),
-				}
-
-				for (key in averageKeys) {
-
-					current_key = averageKeys[key]
-
-					averages[current_key] += new_entity[current_key]
-
-				}
-				survived_entities.push(new_entity)
-
-				console.log('new_entity')
-			}
-			if (current_entity.treesEaten > 0) {
-				current_entity.treesEaten = 0
-
-				for (key in averageKeys) {
-
-					current_key = averageKeys[key]
-
-					averages[current_key] += current_entity[current_key]
-
-				}
-
-				survived_entities.push(current_entity)
-			}
-		}
-
-		console.log('daynight cycle')
-
-		for (key in averageKeys) {
-
-			current_key = averageKeys[key]
-
-			console.log('Average '+current_key+': '+ averages[current_key]/survived_entities.length)
-
-		}
-
-		entities = survived_entities;
-		clocks.dayNight = time;
-	};
-}
 
 
 // Main gameloop

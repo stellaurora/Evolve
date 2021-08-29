@@ -138,15 +138,20 @@ function sentience(ctx, entites) {
   return postsentience;
 }
 
+// object which contains functions for entity sentience
 var fabricatedKnowledge = {
+
+  // move entity in x and y
   move: function(entity, x, y) {
 
+    // addition of x and y to entity
     entity.position.x += x;
     entity.position.y += y;
 
     return entity;
   },
 
+  // move the entity towards a goal
   moveTowardsGoal: function(entity, goalX, goalY) {
 
 
@@ -154,32 +159,49 @@ var fabricatedKnowledge = {
     let distX = entity.position.x-goalX;
     let distY = entity.position.y-goalY;
 
+    // find the angle between the entity and the goal
     let angleToGoal = Math.atan2(distY, distX);
 
 
+    // calculate the X and Y value for the entity to move if the hypotenuse is the speed of the entity
     let moveX = -Math.cos(angleToGoal) * entity.speed;
     let moveY = -Math.sin(angleToGoal) * entity.speed;
 
-    // Check if entity position is already at  target, + trounding since entity position is actually an insanely long floating point number
+
+    // Check if entity position is already at  target, + rounding since entity position is actually an insanely long floating point number
     if (Math.abs(distX) < entity.speed && Math.abs(distY) < entity.speed) {
+
+      // move entity to target
       moveX = entity.speed - distX
       moveY = entity.speed - distY
+
+      // its at the target so the target destination is null since its arrived
       entity.moveTarget = null
     }
 
+    // move the entity to the new location closer to the goal
     return this.move(entity, moveX, moveY)
   },
 
+  // generates a random target for an entity to wander to
   genRandomWander: function(entity) {
 
     current_tile = {water: true}
-    let moveX = worldTotalSize/2
-    let moveY = worldTotalSize/2
 
+    let moveX;
+    let moveY;
+
+    // make sure the tile isnt water so entities are stuck on the island, and the tile isnt undefined
     while (current_tile != undefined && current_tile.water == true) {
+
+      // create a random movement target within the entity wander distance range
       moveX = Math.floor(entity.position.x + (Math.random() -0.5 )* current_entity.wanderdistance );
       moveY = Math.floor(entity.position.y + (Math.random() -0.5 )* current_entity.wanderdistance );
-      current_tile = totalTiles[[Math.ceil(moveX/20), Math.ceil(moveY/20)]]
+
+      // Get the position of the tile the movement target is set to
+      current_tile = totalTiles[[Math.ceil(moveX/tileSize), Math.ceil(moveY/tileSize)]]
+
+      // make sure its inside the map (though this can cause the simulation to completely freeze if wander distance isnt clamped)
       if (moveX > worldTotalSize | moveX < 0 | moveY > worldTotalSize | moveY < 0) {
         current_tile = {water: true};
       }
@@ -188,11 +210,19 @@ var fabricatedKnowledge = {
     return {x: moveX, y: moveY, tile: current_tile}
   },
 
+  // wandering state
   wander: function(entity) {
 
+    // check if the entity has found a tree
     if (entity.foundTree == true) {
+
+      // if the move target is not empty
       if (entity.moveTarget != null) {
-        if (trees[[Math.round(entity.moveTarget.x/20),Math.round(entity.moveTarget.y/20)]].berry != true) {
+
+        // check if the berry on the tree the entity is moving towards still exists
+        if (trees[[entity.treeTarget.tilePos.x, entity.treeTarget.tilePos.y]].berry != true) {
+
+          // if it doesnt then clear the movetarget and find a new tree
           entity.moveTarget = null;
           entity.foundTree = false;
         }
@@ -202,19 +232,22 @@ var fabricatedKnowledge = {
     // if a moveTarget is already set during wandering process
     if (entity.moveTarget == null) {
 
+      // if the target is null generate a new random wander target
       moveData = fabricatedKnowledge.genRandomWander(entity)
 
-
+      // set the move target to the new random wander
       entity.moveTarget = {x: moveData.x, y: moveData.y}
 
+      // if entity has found a tree && the moveTarget is null so it has just been cleared
       if (entity.foundTree == true) {
-        if (trees[[Math.round(entity.position.x/20), Math.round(entity.position.y/20)]] == undefined) {
-          console.log(entity, [Math.round(entity.position.x/20), Math.round(entity.position.y/20)])
-        }
+
+        // set the berry at the target to be false since the entity went nom nom
         trees[[entity.treeTarget.tilePos.x, entity.treeTarget.tilePos.y]].berry = false;
         entity.foundTree = false;
+
+        // find a new tree with berries, and the entity has also eaten one berry today  so add the amount of food its worth ^w^
         entity.treeTarget = {}
-        entity.treesEaten += 1;
+        entity.treesEaten += simulationFactors.foodValue;
 
       }
     }
@@ -222,12 +255,11 @@ var fabricatedKnowledge = {
     // update available tiles while wandering
     entity = fabricatedKnowledge.getEntityTile(entity)
 
-    if (entity.treesEaten < 2 && entity.foundTree == false) {
+    // check if entity has not had its maximum amount of food (its not full) and it hasnt found a tree yet to eat
+    if (entity.treesEaten < simulationFactors.maxFood && entity.foundTree == false) {
       for (tile in entity.accessibleTiles) {
         current_tile = entity.accessibleTiles[tile]
-        if (current_tile == undefined) {
-          console.log(entity)
-        }
+
         if (current_tile.tree == true) {
           if (trees[[current_tile.realX, current_tile.realY]].berry == true) {
             entity.foundTree = true;
