@@ -300,10 +300,10 @@ function clockCheck(time) {
 				new_entity = {
 					position: 				{x: current_entity.position.x, y: current_entity.position.y} ,
 					colour:   				startingColour,
-					scale:						current_entity.scale * ((Math.random() +0.5)/10),
+					scale:						current_entity.scale * (Math.random() +0.5),
 					boundingBox: 			calculateBoundBox(current_entity.position, genFactors.startingScale),
 					strokeStyle:  		biome["defaultEntityRing"],
-					speed:						current_entity.speed * ((Math.random() +0.5)/10),
+					speed:						current_entity.speed * (Math.random() +0.5),
 					state:						"wander",
 					moveTarget: 			null,
 					sense:						current_entity.sense,
