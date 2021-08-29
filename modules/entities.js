@@ -180,6 +180,9 @@ var fabricatedKnowledge = {
       moveX = Math.floor(entity.position.x + (Math.random() -0.5 )* current_entity.wanderdistance );
       moveY = Math.floor(entity.position.y + (Math.random() -0.5 )* current_entity.wanderdistance );
       current_tile = totalTiles[[Math.ceil(moveX/20), Math.ceil(moveY/20)]]
+      if (moveX > worldTotalSize | moveX < 0 | moveY > worldTotalSize | moveY < 0) {
+        current_tile = {water: true};
+      }
     }
 
     return {x: moveX, y: moveY, tile: current_tile}

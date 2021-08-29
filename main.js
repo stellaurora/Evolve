@@ -15,6 +15,9 @@ var chunkSizes = 10;
 // Sets viewport scale when you first execute it
 var viewportScale = 2;
 
+// selected starting position
+var startingPos = "centre"
+
 // worldSize ^2 determines how many chunks in a world
 var worldSize = 10
 
@@ -33,15 +36,21 @@ var drawStatsEntities = []
 // All availabletiles for spawning entities in
 var availableTiles = []
 
-// Construct viewport before running anything else
-var viewport = viewportCreator(worldSize, tileSize, chunkSizes, (worldSize * tileSize * chunkSizes)/2, -(worldSize * tileSize * chunkSizes)/2);
-
 // Biome setting from ./config/colour_palettes.js
 var biome = "generic_biome";
 biome = colour_palettes[biome];
 
 // if debug is true or not
 var debug_mode = true;
+
+// available starting positions
+var startingPositions = {
+	centre: {x:(tileSize * chunkSizes * worldSize)/2,
+					y:-(tileSize * chunkSizes * worldSize)/2},
+
+	tleft: {x: 0,
+					y:0}
+}
 
 //arbitary height levels for terrian that fall between 0-2, not recommended to adjust unless you are just experimenting
 var heightLevels = {
@@ -262,6 +271,9 @@ var clocks = {
 	dayNight: 0,
 	treeReplace: 0,
 };
+
+// Construct viewport before running anything else
+var viewport = viewportCreator(worldSize, tileSize, chunkSizes, startingPositions[startingPos].x, startingPositions[startingPos].y);
 
 
 // Clock check every frame to see if enough time has passed for a certain action to happen (yes its dependant on framerate rn)
