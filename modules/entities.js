@@ -145,11 +145,6 @@ var fabricatedKnowledge = {
 
   moveTowardsGoal: function(entity, goalX, goalY) {
 
-    // Check if entity position is already at  target, + trounding since entity position is actually an insanely long floating point number
-    if (Math.round(entity.position.x) == goalX && Math.round(entity.position.y) == goalY) {
-      entity.moveTarget = null
-      return entity
-    }
 
     //get the distance betwteen both ponts to calculate the bearing of the object
     let distX = entity.position.x-goalX;
@@ -160,6 +155,13 @@ var fabricatedKnowledge = {
 
     let moveX = -Math.cos(angleToGoal) * entity.speed;
     let moveY = -Math.sin(angleToGoal) * entity.speed;
+
+    // Check if entity position is already at  target, + trounding since entity position is actually an insanely long floating point number
+    if (Math.abs(distX) < entity.speed && Math.abs(distY) < entity.speed) {
+      moveX = entity.speed - distX
+      moveY = entity.speed - distY
+      entity.moveTarget = null
+    }
 
     return this.move(entity, moveX, moveY)
   },
