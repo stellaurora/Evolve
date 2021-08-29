@@ -180,10 +180,6 @@ var fabricatedKnowledge = {
 
   wander: function(entity) {
 
-    if (entity.sleep == true) {
-      return entity
-    }
-
     if (entity.foundTree == true) {
       if (entity.moveTarget != null) {
         if (trees[[Math.round(entity.moveTarget.x/20),Math.round(entity.moveTarget.y/20)]].berry != true) {
@@ -204,8 +200,7 @@ var fabricatedKnowledge = {
       if (entity.foundTree == true) {
         trees[[Math.round(entity.position.x/20), Math.round(entity.position.y/20)]].berry = false;
         entity.foundTree = false;
-        entity.ate = true;
-        entity.sleep = true;
+        entity.treesEaten += 1;
 
       }
     }
@@ -213,16 +208,18 @@ var fabricatedKnowledge = {
     // update available tiles while wandering
     entity = fabricatedKnowledge.getEntityTile(entity)
 
-    for (tile in entity.accessibleTiles) {
-      current_tile = entity.accessibleTiles[tile]
-      if (current_tile == undefined) {
-        console.log(entity)
-      }
-      if (current_tile.tree == true) {
-        if (trees[[current_tile.realX, current_tile.realY]].berry == true) {
-          entity.foundTree = true;
-          entity.moveTarget = {x:current_tile.realX * tileSize, y:current_tile.realY * tileSize}
-       }
+    if (entity.treesEaten < 2 && entity.foundTree == false) {
+      for (tile in entity.accessibleTiles) {
+        current_tile = entity.accessibleTiles[tile]
+        if (current_tile == undefined) {
+          console.log(entity)
+        }
+        if (current_tile.tree == true) {
+          if (trees[[current_tile.realX, current_tile.realY]].berry == true) {
+            entity.foundTree = true;
+            entity.moveTarget = {x:current_tile.realX * tileSize, y:current_tile.realY * tileSize}
+         }
+        }
       }
     }
 

@@ -71,13 +71,13 @@ var heightLevels = {
 var clockSettings = {
 
 	// Seconds between berry refreshes
-	berryRefresh: 30,
+	berryRefresh: 10,
 
 	// Seconds taken for day night cycle
-	dayNight: 5,
+	dayNight: 10,
 
 	// Seconds taken for new trees to generate
-	treeReplace: 120,
+	treeReplace: 100,
 
 
 };
@@ -94,9 +94,11 @@ var textDisplay = {
 	boundingBox: true,
 	strokeStyle: true,
 	state: true,
+	treesEaten: true,
 	moveTarget: true,
 	availableTiles: true,
 	foundTree: true,
+	generation: true,
 
 }
 
@@ -271,7 +273,52 @@ function clockCheck(time) {
 
 	// Day night cycle if i ever implement it
 	if ( time >= (clocks.dayNight + (clockSettings.dayNight * 1000))) {
-		
+
+		// Entities which survive the day ;o
+		let survived_entities = [];
+
+		for (entity in entities) {
+			current_entity = entities[entity]
+
+			if (current_entity.treesEaten > 1) {
+
+				// Determine the starting colour
+				startingColour = biome["startingColour"];
+
+				// If random generate a random colour with brightness
+				if (genFactors.randomColour == true) {
+					startingColour = randomColour(genFactors.entityRANCOLBrightness);
+				};
+
+				new_entity = {
+					position: 				{x: current_entity.position.x, y: current_entity.position.y} ,
+					colour:   				startingColour,
+					scale:						current_entity.scale * (Math.random() +0.5),
+					boundingBox: 			calculateBoundBox(current_entity.position, genFactors.startingScale),
+					strokeStyle:  		biome["defaultEntityRing"],
+					speed:						current_entity.speed * Math.random(),
+					state:						"wander",
+					moveTarget: 			null,
+					sense:						current_entity.sense,
+					availableTiles: 	[],
+					foundTree: 				false,
+					treesEaten: 			0,
+					reproductabililty: 80,
+					generation: 			current_entity.generation+1,
+				}
+
+				survived_entities.push(new_entity)
+				console.log('new_entity')
+			}
+			if (current_entity.treesEaten > 0) {
+				current_entity.treesEaten = 0
+				survived_entities.push(current_entity)
+			}
+		}
+
+		console.log('daynight cycle')
+
+		entities = survived_entities;
 		clocks.dayNight = time;
 	};
 }

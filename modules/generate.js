@@ -186,19 +186,20 @@ function generateEntities() {
 
 		// Entity object being created
 		entity = {
-			position: 			availableTiles[index],
-			colour:   			startingColour,
-			scale:					genFactors.startingScale,
-			boundingBox: 		calculateBoundBox(availableTiles[index], genFactors.startingScale),
-			strokeStyle:  	biome["defaultEntityRing"],
-			speed:					1,
-			state:					"wander",
-			moveTarget: 		null,
-			sense:					3,
-			availableTiles: [],
-			foundTree: 			false,
-			ate: 						false,
-			sleep:					false,
+			position: 				availableTiles[index],
+			colour:   				startingColour,
+			scale:						genFactors.startingScale,
+			boundingBox: 			calculateBoundBox(availableTiles[index], genFactors.startingScale),
+			strokeStyle:  		biome["defaultEntityRing"],
+			speed:						1,
+			state:						"wander",
+			moveTarget: 			null,
+			sense:						3,
+			availableTiles: 	[],
+			foundTree: 				false,
+			treesEaten: 			0,
+			fuckywuckyuwu:		80,
+			generation: 			0,
 		}
 
 		// Add entity to list of entities
