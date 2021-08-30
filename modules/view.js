@@ -266,21 +266,21 @@ function drawSidebar(sctx) {
 	sctx.fillText('Wander Distance: '+		totwoDP(averages.wanderdistance), 		sidebar.width/2, sidebar.height * 50/100);
 
 	sctx.font = Math.floor(sctx.canvas.height * 1/30	) + "px Helvetica";
-	sctx.fillText('Oldest', sidebar.width/2, sidebar.height * 60/100);
+	sctx.fillText('Oldest', sidebar.width/2, sidebar.height * 65/100);
 
 	sctx.strokeStyle = oldest.stroke
 	sctx.fillStyle = oldest.colour
-	sctx.arc(sctx.canvas.width/2 , sctx.canvas.height * 68/100,  sctx.canvas.height * 6/100, 0, 2 * Math.PI);
+	sctx.arc(sctx.canvas.width/2 , sctx.canvas.height * 73/100,  sctx.canvas.height * 6/100, 0, 2 * Math.PI);
 	sctx.fill();
 	sctx.stroke();
 
 	sctx.fillStyle = sidebarSettings.textColour;
 
 	sctx.font = Math.floor(sctx.canvas.height * 1/40	) + "px Helvetica";
-	sctx.fillText(oldest.name, sidebar.width/2, sidebar.height * 77/100);
+	sctx.fillText(oldest.name, sidebar.width/2, sidebar.height * 82/100);
 
-	sctx.fillText('Generation '+oldest.generation, sidebar.width/2, sidebar.height * 82/100);
-	sctx.fillText(oldest.daysAlive +' Days Alive', sidebar.width/2, sidebar.height * 85/100);
+	sctx.fillText('Generation '+oldest.generation, sidebar.width/2, sidebar.height * 87/100);
+	sctx.fillText(oldest.daysAlive +' Days Alive', sidebar.width/2, sidebar.height * 90/100);
 
 
 }
