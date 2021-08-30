@@ -362,6 +362,11 @@ function drawEntities(ctx, entities){
 onkeydown = onkeyup = function(e){
 
 	e = e || event;
+
+	if (e.keyCode == 32 && e.type == 'keydown' && e.repeat == false) {
+		manualSelect = !manualSelect;
+	}
+
 	map[e.keyCode] = e.type == 'keydown';
 
 }

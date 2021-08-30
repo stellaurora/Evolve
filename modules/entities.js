@@ -247,7 +247,7 @@ var fabricatedKnowledge = {
 
         // find a new tree with berries, and the entity has also eaten one berry today  so add the amount of food its worth ^w^
         entity.treeTarget = {}
-        entity.treesEaten += simulationFactors.foodValue;
+        entity.treesEaten = clamp(entity.treesEaten + simulationFactors.foodValue, 0, entity.foodStorageCap);
 
       }
     }

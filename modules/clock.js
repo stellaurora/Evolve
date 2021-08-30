@@ -72,7 +72,7 @@ function clockCheck(time) {
 
 			averages[current_key] = 0
 		}
-		
+
 		// Entities which survive the day ;o
 		let survived_entities = [];
 
@@ -131,6 +131,7 @@ function clockCheck(time) {
 
 				}
 
+				current_entity.treesEaten = clamp(current_entity.treesEaten - current_entity.childReq, 0, Infinity)
         // add it to the entities which survive (since it was created it obviously survived ;-;)
 				survived_entities.push(new_entity)
 			}
@@ -139,7 +140,7 @@ function clockCheck(time) {
 			if (current_entity.treesEaten >= current_entity.foodReq) {
 
         //reset how many trees its eaten
-				current_entity.treesEaten = 0
+				current_entity.treesEaten = clamp(current_entity.treesEaten - current_entity.foodReq, 0, Infinity)
 
         // add its value to the averages
 				for (key in averageKeys) {
