@@ -305,7 +305,7 @@ function GenWorld() {
 }
 
 function generateName() {
-	let combinations = ['vcv','cvvcvc','cvccv','vcvv','vcc','cvvccvc']
+	let combinations = ['vcv','cvvcvc','cvccv','vcvv','vcc','cvvccvc','cvvc','vccvcv']
 
 	vowels = ['a','e','i','o','u']
 	rest = ['b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','y','x','z']

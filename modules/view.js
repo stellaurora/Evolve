@@ -256,15 +256,31 @@ function drawSidebar(sctx) {
 	}
 
 	sctx.font = Math.floor(sctx.canvas.height * 1/30	) + "px Helvetica";
-	sctx.fillText('Averages', sidebar.width/2, sidebar.height * 40/100);
+	sctx.fillText('Averages', sidebar.width/2, sidebar.height * 35/100);
 
 	sctx.font = Math.floor(sctx.canvas.height * 1/40	) + "px Helvetica";
-	sctx.fillText('Speed: '+							totwoDP(averages.speed), 							sidebar.width/2, sidebar.height * 43/100);
-	sctx.fillText('Scale: '+							totwoDP(averages.scale), 							sidebar.width/2, sidebar.height * 46/100);
-	sctx.fillText('Reproduction Chance: '+totwoDP(averages.reproductabililty), 	sidebar.width/2, sidebar.height * 49/100);
-	sctx.fillText('Generation: '+					totwoDP(averages.generation),					sidebar.width/2, sidebar.height * 52/100);
-	sctx.fillText('Wander Distance: '+		totwoDP(averages.wanderdistance), 		sidebar.width/2, sidebar.height * 55/100);
+	sctx.fillText('Speed: '+							totwoDP(averages.speed), 							sidebar.width/2, sidebar.height * 38/100);
+	sctx.fillText('Scale: '+							totwoDP(averages.scale), 							sidebar.width/2, sidebar.height * 41/100);
+	sctx.fillText('Reproduction Chance: '+totwoDP(averages.reproductabililty), 	sidebar.width/2, sidebar.height * 44/100);
+	sctx.fillText('Generation: '+					totwoDP(averages.generation),					sidebar.width/2, sidebar.height * 47/100);
+	sctx.fillText('Wander Distance: '+		totwoDP(averages.wanderdistance), 		sidebar.width/2, sidebar.height * 50/100);
 
+	sctx.font = Math.floor(sctx.canvas.height * 1/30	) + "px Helvetica";
+	sctx.fillText('Oldest', sidebar.width/2, sidebar.height * 60/100);
+
+	sctx.strokeStyle = oldest.stroke
+	sctx.fillStyle = oldest.colour
+	sctx.arc(sctx.canvas.width/2 , sctx.canvas.height * 68/100,  sctx.canvas.height * 6/100, 0, 2 * Math.PI);
+	sctx.fill();
+	sctx.stroke();
+
+	sctx.fillStyle = sidebarSettings.textColour;
+
+	sctx.font = Math.floor(sctx.canvas.height * 1/40	) + "px Helvetica";
+	sctx.fillText(oldest.name, sidebar.width/2, sidebar.height * 77/100);
+
+	sctx.fillText('Generation '+oldest.generation, sidebar.width/2, sidebar.height * 82/100);
+	sctx.fillText(oldest.daysAlive +' Days Alive', sidebar.width/2, sidebar.height * 85/100);
 
 
 }

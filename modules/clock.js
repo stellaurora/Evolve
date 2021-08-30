@@ -117,7 +117,10 @@ function clockCheck(time) {
         // check if its the oldest entity alive
 				if (current_entity.daysAlive > oldest.daysAlive) {
 					oldest.generation = current_entity.generation
-					oldest.daysAlive = current_entity.daysAlive
+					oldest.daysAlive  = current_entity.daysAlive
+					oldest.colour     = current_entity.colour
+					oldest.stroke 		= current_entity.strokeStlye
+					oldest.name				= current_entity.name
 
 				}
 

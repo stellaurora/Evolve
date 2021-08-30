@@ -291,7 +291,8 @@ var population;
 
 // Current oldest entity stats
 var oldest = {generation:0,
-							daysAlive:0};
+							daysAlive:0,
+							colour:"rgb(0,0,0)"};
 
 
 // Noise memory storage
@@ -443,6 +444,14 @@ function generate(debug) {
 		wanderdistance: 		genFactors.startingWandr,
 		generation: 				0,
 	}
+
+	randomEntity = entities[Math.floor(Math.random() * entities.length)]
+
+	oldest = {generation:0,
+						daysAlive:0,
+						colour: randomEntity.colour,
+						stroke: randomEntity.strokeStyle,
+						name: randomEntity.name};
 
 	if (debug == true) {
 
