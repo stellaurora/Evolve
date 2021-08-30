@@ -36,6 +36,16 @@ function clockCheck(time) {
 	// Day night cycle if i ever implement it
 	if ( time >= (clocks.dayNight + (clockSettings.dayNight * 1000))) {
 
+		if (current_entity.daysAlive > oldest.daysAlive) {
+			oldest.generation = -Infinity
+			oldest.daysAlive  = -Infinity
+			oldest.colour     = -Infinity
+			oldest.stroke 		= -Infinity
+			oldest.name				= -Infinity
+
+		}
+
+
 		if (day == 0 && gracePeriod == true) {
 
 			let new_entities = []
@@ -131,7 +141,7 @@ function clockCheck(time) {
 
 				}
 
-				current_entity.treesEaten = clamp(current_entity.treesEaten - current_entity.childReq, 0, Infinity)
+				current_entity.treesEaten = clamp(current_entity.treesEaten - current_entity.childReq, current_entity.foodReq, Infinity)
         // add it to the entities which survive (since it was created it obviously survived ;-;)
 				survived_entities.push(new_entity)
 			}
