@@ -128,6 +128,9 @@ var textDisplay = {
 	generation: 					true,
 	wanderdistance: 			true,
 	name:									true,
+	foodStorageCap: 			true,
+	foodReq:							true,
+	childReq:							true,
 
 }
 
@@ -218,15 +221,15 @@ var simulationFactors = {
 	maxWandr: 300,
 
 	// how much food does eating a tree with a berry on it give
-	foodValue: 1,
+	foodValue: 3,
 
-	// maximum amount of food an entity can eat in a day
+	// base amount of maximum amount of food an entity can eat in a day for an entity of speed 1, scale 1,
 	maxFood: 2,
 
-	// how much food an entity needs a day to survive
+	// base amount how much food an entity needs a day to survive for an entity of speed 1, scale 1,
 	foodReq: 1,
 
-	// how much food an entity needs to have a child
+	// base amount how much food an entity needs to have a child base for an entity of speed 1, scale 1,
 	childReq: 2,
 
 	// How much every mutation should effect scale
@@ -241,6 +244,17 @@ var simulationFactors = {
 	// How much every mutation should effect wandering distance
 	wandrMutationFactor: 1,
 
+	// how much speed above base should ffect how much food an entity requires
+	speedFoodFactor: 1,
+
+	// how much more food ana entity can store above 1 based on its size
+	scaleStorageFactor: 0.2,
+
+	// how much more food scale above 1 used based on its size
+	scaleFoodFactor: 0.1,
+
+	// seperate option for determining how much effect scale has on child requirement
+	scaleChildFactor: 0.2,
 }
 
 var statsFactors = {
@@ -327,6 +341,9 @@ var averages = {
 	reproductabililty:	0,
 	wanderdistance: 		0,
 	generation: 				0,
+	foodStorageCap:			0,
+	foodReq:						0,
+	childReq:						0,
 }
 
 // Map for movement
@@ -439,15 +456,6 @@ function generate(debug) {
 	console.log('Entity generation completed');
 	console.log(entities.length + ' Entities generated')
 
-	// Statistics of current entities
-	averages = {
-		speed: 							genFactors.startingSpeed,
-		scale:							genFactors.startingScale,
-		reproductabililty:	genFactors.startingRepro,
-		wanderdistance: 		genFactors.startingWandr,
-		generation: 				0,
-	}
-
 	randomEntity = entities[Math.floor(Math.random() * entities.length)]
 
 	oldest = {generation:0,
@@ -455,6 +463,18 @@ function generate(debug) {
 						colour: randomEntity.colour,
 						stroke: randomEntity.strokeStyle,
 						name: randomEntity.name};
+
+		// Statistics of current entities
+		averages = {
+			speed: 							genFactors.startingSpeed,
+			scale:							genFactors.startingScale,
+			reproductabililty:	genFactors.startingRepro,
+			wanderdistance: 		genFactors.startingWandr,
+			generation: 				0,
+			foodStorageCap:			randomEntity.foodStorageCap,
+			foodReq:						randomEntity.foodReq,
+			childReq:						randomEntity.childReq,
+		}
 
 	if (debug == true) {
 
@@ -486,4 +506,13 @@ var sidebarSettings = {
 
 	textColour: "rgb(32,32,32)",
 	isleNameSize: 20,
+
+	// heights are stored as fraction of sidebar heights over 100
+	isleHeight: 			10,
+	worldDimHeight:		13,
+	popHeight: 				20,
+	dayHeight: 				23,
+	averagesHeight : 	30,
+	oldestHeight: 		65,
+
 }

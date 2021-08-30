@@ -57,13 +57,6 @@ function clockCheck(time) {
 		}
 		else {
     // Reset average values of current alive entities
-		averages = {
-			speed: 0,
-			scale: 0,
-			reproductabililty: 0,
-			generation: 0,
-			wanderdistance: 0,
-		}
 
     // Total population before
 		population = entities.length;
@@ -74,6 +67,12 @@ function clockCheck(time) {
     // List of keys to find averages for
 		averageKeys = Object.keys(averages)
 
+		for (key in averageKeys) {
+			current_key = averageKeys[key]
+
+			averages[current_key] = 0
+		}
+		
 		// Entities which survive the day ;o
 		let survived_entities = [];
 
@@ -82,7 +81,7 @@ function clockCheck(time) {
 
 			current_entity.daysAlive += 1
 
-			if (current_entity.treesEaten >= simulationFactors.childReq && Math.random() < (current_entity.reproductabililty/100)) {
+			if (current_entity.treesEaten >= current_entity.childReq && Math.random() < (current_entity.reproductabililty/100)) {
 
 				// Determine the starting colour
 				startingColour = biome["startingColour"];
@@ -113,10 +112,17 @@ function clockCheck(time) {
           reproductabililty:	clamp(current_entity.reproductabililty    * (Math.random() +0.5) * simulationFactors.reproMutationFactor, simulationFactors.minRepro, simulationFactors.maxRepro),
           wanderdistance: 		clamp(current_entity.wanderdistance       * (Math.random() +0.5) * simulationFactors.wandrMutationFactor, simulationFactors.minWandr, simulationFactors.maxWandr),
 
-					name: generateName()
+					name: generateName(),
+					foodStorageCap:				simulationFactors.maxFood,
+					foodReq:							simulationFactors.foodReq,
+					childReq:							simulationFactors.childReq,
 				}
 
-        // Add the new entities stats to the average for the alive entities
+				new_entity.foodStorageCap	 = new_entity.foodStorageCap   +  (simulationFactors.maxFood * (new_entity.scale * simulationFactors.scaleStorageFactor ));
+				new_entity.foodReq				 = new_entity.foodReq          +  (simulationFactors.foodReq  * (new_entity.scale * simulationFactors.scaleFoodFactor   )) + (simulationFactors.foodReq * (new_entity.speed * simulationFactors.speedFoodFactor));
+				new_entity.childReq	       = new_entity.childReq 				 + 	(simulationFactors.childReq * (new_entity.scale * simulationFactors.scaleChildFactor  ));
+
+				// Add the new entities stats to the average for the alive entities
 				for (key in averageKeys) {
 
 					current_key = averageKeys[key]
@@ -130,7 +136,7 @@ function clockCheck(time) {
 			}
 
       // Make sure its eaten enough food to survive
-			if (current_entity.treesEaten >= simulationFactors.foodReq) {
+			if (current_entity.treesEaten >= current_entity.foodReq) {
 
         //reset how many trees its eaten
 				current_entity.treesEaten = 0

@@ -256,7 +256,7 @@ var fabricatedKnowledge = {
     entity = fabricatedKnowledge.getEntityTile(entity)
 
     // check if entity has not had its maximum amount of food (its not full) and it hasnt found a tree yet to eat
-    if (entity.treesEaten < simulationFactors.maxFood && entity.foundTree == false) {
+    if (entity.treesEaten < entity.foodStorageCap && entity.foundTree == false) {
       for (tile in entity.accessibleTiles) {
         current_tile = entity.accessibleTiles[tile]
 

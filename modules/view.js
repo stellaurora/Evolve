@@ -229,11 +229,11 @@ function drawSidebar(sctx) {
 	//island name
 	sctx.font = Math.floor(sctx.canvas.height * 1/sidebarSettings.isleNameSize	) + "px Helvetica";
 	sctx.fillStyle = sidebarSettings.textColour;
-	sctx.fillText('Island of '+islandName, sidebar.width/2, sidebar.height * 1/10);
+	sctx.fillText('Island of '+islandName, sidebar.width/2, sidebar.height * (sidebarSettings.isleHeight)/100);
 
 
 	sctx.font = Math.floor(sctx.canvas.height * 1/40) + "px Helvetica";
-	sctx.fillText(worldSize + ' x ' + worldSize, sidebar.width/2, sidebar.height * 13/100);
+	sctx.fillText(worldSize + ' x ' + worldSize, sidebar.width/2, sidebar.height * (sidebarSettings.worldDimHeight)/100);
 
 	let symbol = ''
 
@@ -248,8 +248,8 @@ function drawSidebar(sctx) {
 	}
 
 	sctx.font = Math.floor(sctx.canvas.height * 1/40	) + "px Helvetica";
-	sctx.fillText('Population of '+entities.length+ ' '+ symbol + Math.abs(popchange), sidebar.width/2, sidebar.height * 20/100);
-	sctx.fillText('It is day '+day, sidebar.width/2, sidebar.height * 23/100);
+	sctx.fillText('Population of '+entities.length+ ' '+ symbol + Math.abs(popchange), sidebar.width/2, sidebar.height * (sidebarSettings.popHeight)/100);
+	sctx.fillText('It is day '+day, sidebar.width/2, sidebar.height * (sidebarSettings.dayHeight)/100);
 
 	if (day == 0 && gracePeriod == true) {
 			sctx.fillText('They shall live today', sidebar.width/2, sidebar.height * 26/100);
@@ -260,31 +260,48 @@ function drawSidebar(sctx) {
 	}
 
 	sctx.font = Math.floor(sctx.canvas.height * 1/30	) + "px Helvetica";
-	sctx.fillText('Averages', sidebar.width/2, sidebar.height * 35/100);
+	sctx.fillText('Averages', sidebar.width/2, sidebar.height * sidebarSettings.averagesHeight);
 
 	sctx.font = Math.floor(sctx.canvas.height * 1/40	) + "px Helvetica";
-	sctx.fillText('Speed: '+							totwoDP(averages.speed), 							sidebar.width/2, sidebar.height * 38/100);
-	sctx.fillText('Scale: '+							totwoDP(averages.scale), 							sidebar.width/2, sidebar.height * 41/100);
-	sctx.fillText('Reproduction Chance: '+totwoDP(averages.reproductabililty), 	sidebar.width/2, sidebar.height * 44/100);
-	sctx.fillText('Generation: '+					totwoDP(averages.generation),					sidebar.width/2, sidebar.height * 47/100);
-	sctx.fillText('Wander Distance: '+		totwoDP(averages.wanderdistance), 		sidebar.width/2, sidebar.height * 50/100);
+
+	prettyPrint = {
+		speed: "Speed: ",
+		scale: "Scale: ",
+		reproductabililty: "Reproduction Chance: ",
+		generation: "Generation: ",
+		wanderdistance: "Wander Distance: ",
+		foodStorageCap: "Maximum Food: ",
+		foodReq: "Food Required: ",
+		childReq: "Reproduction Food: ",
+	}
+
+	let current_iter = 1;
+	let averageKeys = Object.keys(averages)
+
+
+	for (key in averageKeys) {
+		current_key = averageKeys[key]
+
+		sctx.fillText(prettyPrint[current_key] +	totwoDP(averages[current_key]), 	sidebar.width/2, sidebar.height * (sidebarSettings.averagesHeight + (current_iter * 3))/100);
+		current_iter += 1
+	}
 
 	sctx.font = Math.floor(sctx.canvas.height * 1/30	) + "px Helvetica";
-	sctx.fillText('Oldest', sidebar.width/2, sidebar.height * 65/100);
+	sctx.fillText('Oldest', sidebar.width/2, sidebar.height * (sidebarSettings.oldestHeight)/100);
 
 	sctx.strokeStyle = oldest.stroke
 	sctx.fillStyle = oldest.colour
-	sctx.arc(sctx.canvas.width/2 , sctx.canvas.height * 73/100,  sctx.canvas.height * 6/100, 0, 2 * Math.PI);
+	sctx.arc(sctx.canvas.width/2 , sctx.canvas.height * (sidebarSettings.oldestHeight + 8)/100,  sctx.canvas.height * 6/100, 0, 2 * Math.PI);
 	sctx.fill();
 	sctx.stroke();
 
 	sctx.fillStyle = sidebarSettings.textColour;
 
 	sctx.font = Math.floor(sctx.canvas.height * 1/40	) + "px Helvetica";
-	sctx.fillText(oldest.name, sidebar.width/2, sidebar.height * 82/100);
+	sctx.fillText(oldest.name, sidebar.width/2, sidebar.height * (sidebarSettings.oldestHeight + 17)/100);
 
-	sctx.fillText('Generation '+oldest.generation, sidebar.width/2, sidebar.height * 87/100);
-	sctx.fillText(oldest.daysAlive +' Days Alive', sidebar.width/2, sidebar.height * 90/100);
+	sctx.fillText('Generation '+oldest.generation, sidebar.width/2, sidebar.height * (sidebarSettings.oldestHeight + 22 )/100);
+	sctx.fillText(oldest.daysAlive +' Days Alive', sidebar.width/2, sidebar.height * (sidebarSettings.oldestHeight + 25 )/100);
 
 
 }

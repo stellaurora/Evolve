@@ -203,7 +203,12 @@ function generateEntities() {
 			generation: 					0,
 			treeTarget:						{},
 			daysAlive:						0,
-			name:									generateName()
+			name:									generateName(),
+			foodStorageCap:				simulationFactors.maxFood  + 	(simulationFactors.maxFood  * (genFactors.startingScale * simulationFactors.scaleStorageFactor)),
+			foodReq:							simulationFactors.foodReq  + 	(simulationFactors.foodReq  * (genFactors.startingScale * simulationFactors.scaleFoodFactor   )) + (simulationFactors.foodReq * (genFactors.startingSpeed * simulationFactors.speedFoodFactor)),
+			childReq:							simulationFactors.childReq + 	(simulationFactors.childReq * (genFactors.startingScale * simulationFactors.scaleChildFactor  )),
+
+
 		}
 
 		// Add entity to list of entities
@@ -305,7 +310,7 @@ function GenWorld() {
 }
 
 function generateName() {
-	let combinations = ['vcv','cvvcvc','cvccv','vcvv','vcc','cvvccvc','cvvc','vccvcv']
+	let combinations = ['vcv','cvvcvc','cvccv','vcvv','vcc','cvvccvc','cvvc','vccvcv','cvc',]
 
 	vowels = ['a','e','i','o','u']
 	rest = ['b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','y','x','z']
