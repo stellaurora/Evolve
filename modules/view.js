@@ -6,9 +6,12 @@
 function updateWindow(ctx) {
 
 	// Change canvas height & width to match window height & width
-	ctx.canvas.width  = window.innerWidth;
+	ctx.canvas.width  = window.innerWidth * 3/4;
 	ctx.canvas.height = window.innerHeight;
 
+	sctx.canvas.width =  window.innerWidth * 1/4;
+	sctx.canvas.height = window.innerHeight;
+	sctx.canvas.style.left = (window.innerWidth * 3/4) + "px"
 }
 
 // Clear the canvas to backdrop colour
@@ -17,6 +20,9 @@ function clearCanvas(backdrop) {
 	// Clear canvas with backdrop colour.
 	ctx.fillStyle = backdrop;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	sctx.fillStyle = sidebarSettings.bgColour;
+	sctx.fillRect(0, 0, sidebar.width, sidebar.height);
 
 }
 
@@ -71,7 +77,7 @@ function drawStats(ctx, entities) {
 
 	// Text font height
 	let textHeight = statsFactors.textSize * viewport.scale;
-	ctx.font = textHeight + "px Arial";
+	ctx.font = textHeight + "px Helvetica";
 
 	// change colour of text to default text colour
 	ctx.fillStyle = statsFactors.textColour;
@@ -94,7 +100,7 @@ function drawStats(ctx, entities) {
 				// change text height to accomodate the new size per entity
 				textHeight = textFontSize;
 
-				ctx.font = textFontSize + "px Arial";
+				ctx.font = textFontSize + "px Helvetica";
 
 			}
 
@@ -197,6 +203,71 @@ function drawPath(ctx, entities, targetX, targetY) {
 	}
 }
 
+function totwoDP(num){
+	return Math.trunc(num * 100)/100
+}
+function drawSideBarDivider(sctx) {
+
+	let width = Math.floor((sctx.canvas.width/100) * sidebarSettings.dividerSize);
+
+	sctx.fillStyle = sidebarSettings.dividerColour;
+	sctx.fillRect(0, 0, width, sidebar.height);
+
+}
+// Draw sidebar in main
+function drawSidebar(sctx) {
+
+	sctx.textAlign = 'center';
+
+	if (sidebarSettings.drawDivider == true) {
+	drawSideBarDivider(sctx)
+	}
+
+	sctx.fillStyle = sidebarSettings.textColour;
+
+
+	//island name
+	sctx.font = Math.floor(sctx.canvas.height * 1/sidebarSettings.isleNameSize	) + "px Helvetica";
+	sctx.fillStyle = sidebarSettings.textColour;
+	sctx.fillText('Island of '+islandName, sidebar.width/2, sidebar.height * 1/10);
+
+
+	sctx.font = Math.floor(sctx.canvas.height * 1/40) + "px Helvetica";
+	sctx.fillText(worldSize + ' x ' + worldSize, sidebar.width/2, sidebar.height * 13/100);
+
+	let symbol = ''
+
+	if (popchange == 0) {
+		symbol = '↕'
+	}
+	else if (popchange > 0) {
+		symbol = '↑'
+	}
+	else if (popchange < 0) {
+		symbol = '↓'
+	}
+
+	sctx.font = Math.floor(sctx.canvas.height * 1/40	) + "px Helvetica";
+	sctx.fillText('Population of '+entities.length+ ' '+ symbol + Math.abs(popchange), sidebar.width/2, sidebar.height * 20/100);
+
+	if (averages.speed == null) {
+		sctx.fillText('The population has died..', sidebar.width/2, sidebar.height * 40/100);
+		return
+	}
+
+	sctx.font = Math.floor(sctx.canvas.height * 1/30	) + "px Helvetica";
+	sctx.fillText('Averages', sidebar.width/2, sidebar.height * 40/100);
+
+	sctx.font = Math.floor(sctx.canvas.height * 1/40	) + "px Helvetica";
+	sctx.fillText('Speed: '+							totwoDP(averages.speed), 							sidebar.width/2, sidebar.height * 43/100);
+	sctx.fillText('Scale: '+							totwoDP(averages.scale), 							sidebar.width/2, sidebar.height * 46/100);
+	sctx.fillText('Reproduction Chance: '+totwoDP(averages.reproductabililty), 	sidebar.width/2, sidebar.height * 49/100);
+	sctx.fillText('Generation: '+					totwoDP(averages.generation),					sidebar.width/2, sidebar.height * 52/100);
+	sctx.fillText('Wander Distance: '+		totwoDP(averages.wanderdistance), 		sidebar.width/2, sidebar.height * 55/100);
+
+
+
+}
 // Draw entities on world
 function drawEntities(ctx, entities){
 

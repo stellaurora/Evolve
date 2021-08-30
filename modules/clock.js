@@ -23,8 +23,13 @@ function clockCheck(time) {
 	// Day night cycle if i ever implement it
 	if ( time >= (clocks.dayNight + (clockSettings.dayNight * 1000))) {
 
+		if (day == -1) {
+			day += 1
+			clocks.dayNight = time;
+		}
+		else {
     // Reset average values of current alive entities
-		let averages = {
+		averages = {
 			speed: 0,
 			scale: 0,
 			reproductabililty: 0,
@@ -33,10 +38,10 @@ function clockCheck(time) {
 		}
 
     // Total population before
-		let population = entities.length;
+		population = entities.length;
 
     // Current oldest entity stats
-		let oldest = {generation:-Infinity,daysAlive:-Infinity};
+		oldest = {generation:-Infinity,daysAlive:-Infinity};
 
     // List of keys to find averages for
 		averageKeys = Object.keys(averages)
@@ -77,6 +82,8 @@ function clockCheck(time) {
           speed:							clamp(current_entity.speed                * (Math.random() +0.5) * simulationFactors.speedMutationFactor, simulationFactors.minSpeed, simulationFactors.maxSpeed),
           reproductabililty:	clamp(current_entity.reproductabililty    * (Math.random() +0.5) * simulationFactors.reproMutationFactor, simulationFactors.minRepro, simulationFactors.maxRepro),
           wanderdistance: 		clamp(current_entity.wanderdistance       * (Math.random() +0.5) * simulationFactors.wandrMutationFactor, simulationFactors.minWandr, simulationFactors.maxWandr),
+
+					name: generateName()
 				}
 
         // Add the new entities stats to the average for the alive entities
@@ -129,16 +136,19 @@ function clockCheck(time) {
 			current_key = averageKeys[key]
 
 			console.log('Average '+current_key+': '+ averages[current_key]/survived_entities.length)
-
+			averages[current_key] = averages[current_key]/survived_entities.length
 		}
 		console.log(population, survived_entities.length)
 		console.log('Population Change: '+(survived_entities.length - population))
 		console.log('Total population: ' +survived_entities.length)
 		console.log('Oldest: Generation ' +oldest.generation+ ' Day ' +oldest.daysAlive )
 
+		popchange = (survived_entities.length - population)
+
     // Update entities & the amount of days that have passed
 		entities = survived_entities;
 		day += 1
 		clocks.dayNight = time;
+	}
 	};
 }

@@ -6,6 +6,11 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext('2d', { alpha: false });
 
+// Sidebar
+var sidebar = document.getElementById("sidebar");
+var sctx = sidebar.getContext('2d', { alpha: false });
+
+
 // size of tiles
 var tileSize = 20
 
@@ -14,6 +19,9 @@ var totalTiles = {}
 
 // chunkSizes ^2 determines how many tiles are in a chunk
 var chunkSizes = 10;
+
+// name of the island (cosmetic)
+var islandName;
 
 // Sets viewport scale when you first execute it
 var viewportScale = 2;
@@ -101,21 +109,22 @@ var textDisplay = {
 	totalList: [],
 
 	// Toggles on/off if to display entity property in selection text
-	position: 						true,
-	colour:   						true,
+	position: 						false,
+	colour:   						false,
 	scale:								true,
-	boundingBox: 					true,
-	strokeStyle:  				true,
+	boundingBox: 					false,
+	strokeStyle:  				false,
 	speed:								true,
 	state:								true,
 	moveTarget: 					true,
 	sense:								true,
-	availableTiles: 			true,
+	availableTiles: 			false,
 	foundTree: 						true,
 	treesEaten: 					true,
 	reproductabililty:		true,
 	generation: 					true,
 	wanderdistance: 			true,
+	name:									true,
 
 }
 
@@ -274,6 +283,17 @@ var statsFactors = {
 // Current iteration of perlin nosie
 var perliniteration = 0;
 
+
+var popchange = 0;
+
+// Total population before
+var population;
+
+// Current oldest entity stats
+var oldest = {generation:0,
+							daysAlive:0};
+
+
 // Noise memory storage
 var grid = [];
 
@@ -296,6 +316,15 @@ noBerry.src = "./assets/tree.svg"
 let berry = new Image();
 berry.src = "./assets/berry.svg"
 
+// Statistics of current entities
+var averages = {
+	speed: 							0,
+	scale:							0,
+	reproductabililty:	0,
+	wanderdistance: 		0,
+	generation: 				0,
+}
+
 // Map for movement
 var map = {};
 
@@ -308,8 +337,11 @@ var entitySelected = false;
 // Stats for the selected entity draw location
 var entityDisplayStats = [{}];
 
+// The end
+var end = false
+
 // the day
-var day = 0
+var day =  -1
 
 // constant of world total sizes
 var worldTotalSize = tileSize * chunkSizes * worldSize
@@ -362,6 +394,13 @@ function gameLoop(time){
 	// why is life? why is existence? why is reality?
 	entities = sentience(ctx, entities)
 
+	// drawing of the sidebar
+	drawSidebar(sctx)
+
+	if (end == true) {
+		return
+	}
+
 	// Loop over program indefinitely
 	requestAnimationFrame(gameLoop);
 
@@ -378,7 +417,10 @@ function generate(debug) {
 	};
 
 	// Logging some stuff in console which is helpful
-	console.log('Generating island');
+
+	islandName = generateName()
+
+	console.log('Generating island '+islandName);
 	console.log('with '+ worldSize + 'x' + worldSize +' chunks');
 	console.log('at '+ worldSize*worldSize * chunkSizes*chunkSizes + ' tiles');
 
@@ -392,6 +434,15 @@ function generate(debug) {
 
 	console.log('Entity generation completed');
 	console.log(entities.length + ' Entities generated')
+
+	// Statistics of current entities
+	averages = {
+		speed: 							genFactors.startingSpeed,
+		scale:							genFactors.startingScale,
+		reproductabililty:	genFactors.startingRepro,
+		wanderdistance: 		genFactors.startingWandr,
+		generation: 				0,
+	}
 
 	if (debug == true) {
 
@@ -410,3 +461,17 @@ function generate(debug) {
 generate(debug_mode);
 refreshBerries(trees)
 requestAnimationFrame(gameLoop);
+
+// Main menu elements begin here:
+var sidebarSettings = {
+	bgColour: "rgb(232,232,232)",
+
+	// stored as percentage of sidebar floored
+	dividerSize:	1,
+	dividerColour: 	"rgb(169,169,169)",
+
+	drawDivider: false,
+
+	textColour: "rgb(32,32,32)",
+	isleNameSize: 20,
+}

@@ -203,6 +203,7 @@ function generateEntities() {
 			generation: 					0,
 			treeTarget:						{},
 			daysAlive:						0,
+			name:									generateName()
 		}
 
 		// Add entity to list of entities
@@ -301,4 +302,29 @@ function GenWorld() {
 
 	perliniteration+=2
 	return world
+}
+
+function generateName() {
+	let combinations = ['vcv','cvvcvc','cvccv','vcvv','vcc','cvvccvc']
+
+	vowels = ['a','e','i','o','u']
+	rest = ['b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','y','x','z']
+
+	let nameGenerated = ''
+	let combination = combinations[Math.floor(Math.random() * combinations.length)]
+
+	for (var i = 0; i < combination.length; i++) {
+		let letter = combination.charAt(i)
+
+		if (letter == 'v') {
+			nameGenerated += vowels[Math.floor(Math.random() * vowels.length)]
+		}
+
+		if (letter == 'c') {
+			nameGenerated += rest[Math.floor(Math.random() * rest.length)]
+		}
+	}
+
+	return nameGenerated.charAt(0).toUpperCase() + nameGenerated.slice(1);
+
 }
