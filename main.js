@@ -17,6 +17,12 @@ var tileSize = 20
 // if they may survive the first day without food
 var gracePeriod = false;
 
+// Total time paused
+var pauseTime = 0;
+
+//yay
+var beginPause = 0;
+
 // list of all tiles
 var totalTiles = {}
 
@@ -37,6 +43,9 @@ var worldSize = 10
 
 // Manual selecion flag
 var manualSelect = false;
+
+// Pause the simulation
+var pause = false;
 
 // sea level height ( between 0 and 2 )
 var seaLevel = 1;
@@ -403,17 +412,19 @@ function gameLoop(time){
 	// draw statistics
 	drawStats(ctx, drawStatsEntities);
 
-	// run certain functions every n seconds
-	clockCheck(time);
-
 	// Movement checks for viewport camera
 	getMovement();
 
 	// independency
 	getFrameTime(time)
 
-	// why is life? why is existence? why is reality?
-	entities = sentience(ctx, entities)
+	if (pause != true) {
+		// run certain functions every n seconds
+		clockCheck(time);
+
+		// why is life? why is existence? why is reality?
+		entities = sentience(ctx, entities)
+	}
 
 	// drawing of the sidebar
 	drawSidebar(sctx)

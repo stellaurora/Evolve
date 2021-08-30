@@ -364,7 +364,14 @@ onkeydown = onkeyup = function(e){
 	e = e || event;
 
 	if (e.keyCode == 32 && e.type == 'keydown' && e.repeat == false) {
-		manualSelect = !manualSelect;
+		if (pause == false) {
+			beginPause = performance.now()
+			pause = true;
+		}
+		else if (pause == true) {
+			pauseTime += performance.now() - beginPause
+			pause = false;
+		}
 	}
 
 	map[e.keyCode] = e.type == 'keydown';

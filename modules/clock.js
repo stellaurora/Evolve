@@ -18,6 +18,8 @@ function checkOldest(entity) {
 // the in game clock which runs every set amount of time based on clock settings
 function clockCheck(time) {
 
+	time -= pauseTime
+	
 	// Refresh berries
 	if ( time >= (clocks.berryRefresh + (clockSettings.berryRefresh * 1000))) {
 
