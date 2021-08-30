@@ -36,7 +36,7 @@ function clockCheck(time) {
 	// Day night cycle if i ever implement it
 	if ( time >= (clocks.dayNight + (clockSettings.dayNight * 1000))) {
 
-		if (day == 0) {
+		if (day == 0 && gracePeriod == true) {
 
 			let new_entities = []
 
@@ -79,6 +79,8 @@ function clockCheck(time) {
 
 		for (entity in entities) {
 			current_entity = entities[entity]
+
+			current_entity.daysAlive += 1
 
 			if (current_entity.treesEaten >= simulationFactors.childReq && Math.random() < (current_entity.reproductabililty/100)) {
 
@@ -145,15 +147,12 @@ function clockCheck(time) {
         // check if its the oldest entity alive
 				checkOldest(current_entity)
 
-        // make it older
-				current_entity.daysAlive += 1
-
         // add it to the list of things which live ;o
 				survived_entities.push(current_entity)
 			}
 		}
 
-		console.log('It is now day: '+day)
+		console.log('It is now day: '+(day + 1))
 
 		for (key in averageKeys) {
 

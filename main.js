@@ -14,6 +14,9 @@ var sctx = sidebar.getContext('2d', { alpha: false });
 // size of tiles
 var tileSize = 20
 
+// if they may survive the first day without food
+var gracePeriod = false;
+
 // list of all tiles
 var totalTiles = {}
 

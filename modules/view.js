@@ -251,6 +251,9 @@ function drawSidebar(sctx) {
 	sctx.fillText('Population of '+entities.length+ ' '+ symbol + Math.abs(popchange), sidebar.width/2, sidebar.height * 20/100);
 	sctx.fillText('It is day '+day, sidebar.width/2, sidebar.height * 23/100);
 
+	if (day == 0 && gracePeriod == true) {
+			sctx.fillText('They shall live today', sidebar.width/2, sidebar.height * 26/100);
+	}
 	if (entities.length == 0) {
 		sctx.fillText('The population has died..', sidebar.width/2, sidebar.height * 40/100);
 		return
