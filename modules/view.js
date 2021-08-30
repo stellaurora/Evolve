@@ -249,8 +249,9 @@ function drawSidebar(sctx) {
 
 	sctx.font = Math.floor(sctx.canvas.height * 1/40	) + "px Helvetica";
 	sctx.fillText('Population of '+entities.length+ ' '+ symbol + Math.abs(popchange), sidebar.width/2, sidebar.height * 20/100);
+	sctx.fillText('It is day '+day, sidebar.width/2, sidebar.height * 23/100);
 
-	if (averages.speed == null) {
+	if (entities.length == 0) {
 		sctx.fillText('The population has died..', sidebar.width/2, sidebar.height * 40/100);
 		return
 	}

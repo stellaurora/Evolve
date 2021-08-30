@@ -2,6 +2,19 @@
 // In game clock functions
 
 
+function checkOldest(entity) {
+
+	// check if its the oldest entity alive
+	if (current_entity.daysAlive > oldest.daysAlive) {
+		oldest.generation = current_entity.generation
+		oldest.daysAlive  = current_entity.daysAlive
+		oldest.colour     = current_entity.colour
+		oldest.stroke 		= current_entity.strokeStlye
+		oldest.name				= current_entity.name
+
+	}
+
+}
 // the in game clock which runs every set amount of time based on clock settings
 function clockCheck(time) {
 
@@ -23,7 +36,22 @@ function clockCheck(time) {
 	// Day night cycle if i ever implement it
 	if ( time >= (clocks.dayNight + (clockSettings.dayNight * 1000))) {
 
-		if (day == -1) {
+		if (day == 0) {
+
+			let new_entities = []
+
+			for (entity in entities) {
+
+				current_entity = entities[entity]
+				current_entity.daysAlive += 1
+				new_entities.push(current_entity)
+
+				// check if its the oldest entity alive
+				checkOldest(current_entity)
+
+			}
+			entities = new_entities
+
 			day += 1
 			clocks.dayNight = time;
 		}
@@ -115,14 +143,7 @@ function clockCheck(time) {
 				}
 
         // check if its the oldest entity alive
-				if (current_entity.daysAlive > oldest.daysAlive) {
-					oldest.generation = current_entity.generation
-					oldest.daysAlive  = current_entity.daysAlive
-					oldest.colour     = current_entity.colour
-					oldest.stroke 		= current_entity.strokeStlye
-					oldest.name				= current_entity.name
-
-				}
+				checkOldest(current_entity)
 
         // make it older
 				current_entity.daysAlive += 1

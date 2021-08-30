@@ -342,7 +342,7 @@ var entityDisplayStats = [{}];
 var end = false
 
 // the day
-var day =  -1
+var day =  0
 
 // constant of world total sizes
 var worldTotalSize = tileSize * chunkSizes * worldSize
