@@ -374,6 +374,10 @@ onkeydown = onkeyup = function(e){
 		}
 	}
 
+	if (e.keyCode == 84 && e.type == 'keydown' && e.repeat == false) {
+		manualSelect = !manualSelect;
+	}
+
 	map[e.keyCode] = e.type == 'keydown';
 
 }
